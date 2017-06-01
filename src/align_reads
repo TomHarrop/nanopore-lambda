@@ -1,0 +1,30 @@
+#!/usr/bin/env bash
+
+FASTA="data/NC_001416.fasta"
+READS="data/merged.fq.gz"
+
+outdir="output/bwamem"
+if [[ ! -e "${outdir}" ]]; then
+    mkdir -p "${outdir}"
+fi
+
+# index genome
+bwa index "${FASTA}"
+
+# run mapping
+outfile="${outdir}/mapped.sam"
+logfile="${outdir}/bwamem.log"
+bwa mem -t 8 \
+    -x ont2d \
+    -S -P \
+    "${FASTA}" "${READS}" \
+    > "${outfile}" 2> "${logfile}"
+
+# output coverage on filtered alignments
+bin/bbmap/pileup.sh \
+    "in=${outdir}/mapped.sam" \
+    "ref=${FASTA}" \
+    secondary=f \
+    "hist=${outdir}/hist.txt" \
+    "basecov=${outdir}/basecov.txt" \
+    "bincov=${outdir}/bincov.txt" 

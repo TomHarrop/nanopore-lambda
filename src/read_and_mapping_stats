@@ -1,0 +1,41 @@
+#!/usr/bin/env bash
+
+FASTA="data/NC_001416.fasta"
+READS="data/merged.fq.gz"
+MAPPING="output/bwamem/mapped.sam"
+
+outdir="output/read_stats"
+if [[ ! -e "${outdir}" ]]; then
+    mkdir -p "${outdir}"
+fi
+
+# raw read statistics
+bin/bbmap/readlength.sh \
+    "in=${READS}" \
+    "out=${outdir}/readlength.txt" \
+    bin=500 \
+    max=500000 \
+    nzo=t
+
+# mapped SAM statistics (and mapped raw reads)
+samtools view -F 2308 ${MAPPING} \
+    bin/bbmap/reformat.sh \
+    in=stdin.sam \
+    "out=${outdir}/mapped_reads.fastq.gz" \
+    zl=9 \
+    mappedonly=t \
+    primaryonly=t \
+    "bhist=${outdir}/bhist_mapped.txt" \
+    "qhist=${outdir}/qhist_mapped.txt" \
+    "qchist=${outdir}/qchist_mapped.txt" \
+    "aqhist=${outdir}/aqhist_mapped.txt" \
+    "bqhist=${outdir}/bqhist_mapped.txt" \
+    "lhist=${outdir}/lhist_mapped.txt" \
+    "gchist=${outdir}/gchist_mapped.txt" \
+    gcbins=auto \
+    "ehist=${outdir}/ehist_mapped.txt" \
+    "qahist=${outdir}/qahist_mapped.txt" \
+    "indelhist=${outdir}/indelhist_mapped.txt" \
+    "mhist=${outdir}/mhist_mapped.txt" \
+    "idhist=${outdir}/idhist_mapped.txt" \
+    idbins=auto
