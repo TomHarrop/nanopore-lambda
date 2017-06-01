@@ -19,7 +19,7 @@ bin/bbmap/readlength.sh \
 
 # mapped SAM statistics (and mapped raw reads)
 samtools view -F 2308 ${MAPPING} \
-    bin/bbmap/reformat.sh \
+    | bin/bbmap/reformat.sh \
     in=stdin.sam \
     "out=${outdir}/mapped_reads.fastq.gz" \
     zl=9 \

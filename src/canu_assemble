@@ -1,0 +1,14 @@
+#!/usr/bin/env bash
+
+outdir="output/canu"
+if [[ ! -e "${outdir}" ]]; then
+    mkdir -p "${outdir}"
+fi
+
+reads="output/read_stats/mapped_reads.fastq.gz"
+
+bin/canu/canu \
+    -p lambda -d "${outdir}" \
+    genomeSize=48k \
+    -nanopore-raw "${reads}"
+    
