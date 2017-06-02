@@ -8,6 +8,8 @@ if [[ ! -e "${outdir}" ]]; then
     mkdir -p "${outdir}"
 fi
 
+# FIXME: CHOP ADAPTORS?
+
 # index genome
 bwa index "${FASTA}"
 
